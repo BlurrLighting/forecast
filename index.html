@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forecast 2026 - Blurr Lighting</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/muller');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid #3a3a3a;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            height: 60px;
+        }
+
+        .logo-img {
+            height: 100%;
+            width: auto;
+            filter: brightness(1.2);
+        }
+
+        .header h1 {
+            font-family: 'Muller', 'Inter', sans-serif;
+            color: #FFD700;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: #cccccc;
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #2a2a2a;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            border: 1px solid #3a3a3a;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.15);
+            border-color: #FFD700;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #999999;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 800;
+            color: #FFD700;
+            font-family: 'Muller', 'Inter', sans-serif;
+        }
+
+        .stat-sub {
+            font-size: 0.85em;
+            color: #cccccc;
+            margin-top: 5px;
+            font-weight: 400;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #3a3a3a;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .chart-container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            border: 1px solid #3a3a3a;
+        }
+
+        .chart-title {
+            font-size: 1.5em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-family: 'Muller', 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+        }
+
+        .form-container {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            border: 2px solid #FFD700;
+        }
+
+        .form-title {
+            font-size: 1.5em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-family: 'Muller', 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            color: #cccccc;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input, .form-select {
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #ffffff;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a1a;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Muller', 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .projects-list {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #3a3a3a;
+        }
+
+        .project-item {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #3a3a3a;
+            transition: all 0.3s;
+        }
+
+        .project-item:hover {
+            border-color: #FFD700;
+            transform: translateX(5px);
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-name {
+            font-weight: 600;
+            color: #FFD700;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .project-details {
+            color: #999999;
+            font-size: 0.9em;
+        }
+
+        .project-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #FFD700;
+            margin-right: 20px;
+        }
+
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666666;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a1a;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            border: 2px solid #FFD700;
+        }
+
+        .insight-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-family: 'Muller', 'Inter', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .insight-box p {
+            line-height: 1.6;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .logo {
+                position: static;
+                margin: 0 auto 20px;
+                display: block;
+                text-align: center;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="blurr_logo.png" alt="Blurr Lighting" class="logo-img">
+            </div>
+            <h1>🔮 Forecast 2026</h1>
+            <p>Progress Tracker - Urmărire Obiective Anuale</p>
+        </div>
+
+        <div class="insight-box">
+            <h3>🎯 Obiectiv 2026</h3>
+            <p>Target anual: <strong>300.000 EUR (1.500.000 RON)</strong>. Adaugă proiectele pe măsură ce le confirmi și urmărește progresul în timp real!</p>
+        </div>
+
+        <!-- STATISTICI PRINCIPALE -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Target 2026</div>
+                <div class="stat-value" style="color: rgb(78, 205, 196);">1.500.000 RON</div>
+                <div class="stat-sub">300.000 EUR</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Realizat</div>
+                <div class="stat-value" id="totalRealizat">0 RON</div>
+                <div class="stat-sub" id="totalRealizatEUR">0 EUR</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Rămâne de Acoperit</div>
+                <div class="stat-value" id="gap" style="color: rgb(255, 107, 107);">1.500.000 RON</div>
+                <div class="stat-sub" id="gapEUR">300.000 EUR</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Progress</div>
+                <div class="stat-value" id="progress">0%</div>
+                <div class="stat-sub" id="nrProiecte">0 proiecte</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATISTICI PE DIVIZII -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">AVL Installs</div>
+                <div class="stat-value" id="avlValue">0 RON</div>
+                <div class="stat-sub" id="avlCount">0 proiecte</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Arhitectural</div>
+                <div class="stat-value" id="arhValue">0 RON</div>
+                <div class="stat-sub" id="arhCount">0 proiecte</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Events</div>
+                <div class="stat-value" id="eventsValue">0 RON</div>
+                <div class="stat-sub" id="eventsCount">0 proiecte</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Contract Harvest</div>
+                <div class="stat-value" id="contractValue">0 RON</div>
+                <div class="stat-sub" id="contractCount">0 proiecte</div>
+            </div>
+        </div>
+
+        <!-- GRAFICE -->
+        <div class="grid-2">
+            <div class="chart-container">
+                <h3 class="chart-title">Target vs Realizat</h3>
+                <div class="chart-wrapper">
+                    <canvas id="chartTarget"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Distribuție pe Divizii</h3>
+                <div class="chart-wrapper">
+                    <canvas id="chartDivizii"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3 class="chart-title">Evoluție Proiecte per Divizie</h3>
+            <div class="chart-wrapper">
+                <canvas id="chartEvolutie"></canvas>
+            </div>
+        </div>
+
+        <!-- FORMULAR ADĂUGARE PROIECT -->
+        <div class="form-container">
+            <h3 class="form-title">➕ Adaugă Proiect Nou</h3>
+            <form id="addProjectForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Nume Proiect</label>
+                        <input type="text" class="form-input" id="projectName" placeholder="Ex: Biserica Betania - Stage" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valoare (EUR)</label>
+                        <input type="number" class="form-input" id="projectValue" placeholder="Ex: 15000" required min="0" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Divizie</label>
+                        <select class="form-select" id="projectDivision" required>
+                            <option value="">Selectează...</option>
+                            <option value="AVL Installs">AVL Installs</option>
+                            <option value="Arhitectural">Arhitectural</option>
+                            <option value="Events">Events</option>
+                            <option value="Contract Harvest">Contract Harvest</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Adaugă Proiect</button>
+            </form>
+        </div>
+
+        <!-- LISTA PROIECTE -->
+        <div class="projects-list">
+            <h3 class="chart-title">📋 Proiecte Confirmate</h3>
+            <div id="projectsList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📂</div>
+                    <p>Nu există proiecte adăugate încă.</p>
+                    <p style="margin-top: 10px; color: #999;">Adaugă primul proiect folosind formularul de mai sus.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
